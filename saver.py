@@ -7,6 +7,8 @@ from openpyxl.utils import get_column_letter
 
 class ExcelResultsSaver:
     def __init__(self, output_file='results.xlsx'):
+        if not output_file.endswith('.xlsx'):
+            output_file = output_file + '.xlsx'
         self.output_file = output_file
         self.results = []
 
@@ -16,7 +18,6 @@ class ExcelResultsSaver:
             'image_path': image_path,
             'text': found_text
         })
-
     def save_all(self):
         """Сохраняет все результаты в Excel"""
         if not self.results:
