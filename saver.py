@@ -13,6 +13,8 @@ class ExcelResultsSaver:
         self.results = []
 
     def add_result(self, image_path, found_text):
+        if '×' in found_text:
+            found_text = found_text.split('×')[0][:-6]
         """Добавляет результат в память"""
         self.results.append({
             'image_path': image_path,

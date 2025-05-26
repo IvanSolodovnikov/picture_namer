@@ -7,13 +7,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
 URL = 'https://yandex.ru/images?lr=213'
-WAIT_TIMEOUT = 5
+WAIT_TIMEOUT = 3
 
 
 def get_text(driver, im):
     try:
         # Обновляем страницу перед обработкой нового изображения
         driver.get(URL)
+        text = 'Текст не распознан'
 
         # нажимаем на поиск по фото
         try:
@@ -39,8 +40,6 @@ def get_text(driver, im):
                 EC.visibility_of_element_located((By.CLASS_NAME, 'CbirObjectResponse-Title'))
             )
             text = text_element.text.strip()
-            if text:
-                return text
         except Exception as e:
             ...
 
@@ -51,11 +50,22 @@ def get_text(driver, im):
                                                      '.Button.Button_width_auto.Button_view_default.Button_size_l.Button_link.Tags-Item'))
             )
             if tags:
-                return ', '.join(tag.text.strip() for tag in tags if tag.text.strip())
+                text = ', '.join(tag.text.strip() for tag in tags if tag.text.strip())
         except Exception as e:
             ...
 
-        return "Текст не распознан"
+        try:
+            products = WebDriverWait(driver, WAIT_TIMEOUT).until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a.Link.EProductSnippetTitle'))
+            )
+            print(products)
+            if products:
+                text = products[0].text.strip()
+        except Exception as e:
+            ...
+
+        return text
+
 
     except Exception as e:
         ...
