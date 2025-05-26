@@ -22,10 +22,8 @@ def get_text(driver, im):
                 EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[aria-label="Поиск по картинке"]'))
             )
         except TimeoutException:
-            print('!!!!!!!!!!!!!!!!!!!!' * 10)
-            search_btn = WebDriverWait(driver, WAIT_TIMEOUT).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[aria-label="Поиск по изображению"]'))
-            )
+            ...
+
         search_btn.click()
 
         # вставляем картинку
@@ -58,7 +56,6 @@ def get_text(driver, im):
             products = WebDriverWait(driver, WAIT_TIMEOUT).until(
                 EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a.Link.EProductSnippetTitle'))
             )
-            print(products)
             if products:
                 text = products[0].text.strip()
         except Exception as e:
@@ -77,4 +74,13 @@ def create_driver():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     service = Service(ChromeDriverManager().install())
-    return webdriver.Chrome(service=service, options=options)
+    driver =  webdriver.Chrome(service=service, options=options)
+    try:
+        driver.get(URL)
+        search_btn = WebDriverWait(driver, WAIT_TIMEOUT).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[aria-label="Поиск по картинке"]'))
+        )
+    except TimeoutException:
+        driver.quit()
+        driver = create_driver()
+    return driver
